@@ -1,0 +1,67 @@
+/*
+{#$statement#}
+*/
+
+/* $Id$ */
+
+#ifndef PHP_{#strtoupper($app_name)#}_H
+#define PHP_{#strtoupper($app_name)#}_H
+
+extern zend_module_entry {#$app_name#}_module_entry;
+#define phpext_{#$app_name#}_ptr &{#$app_name#}_module_entry
+
+#ifdef PHP_WIN32
+#	define PHP_{#strtoupper($app_name)#}_API __declspec(dllexport)
+#elif defined(__GNUC__) && __GNUC__ >= 4
+#	define PHP_{#strtoupper($app_name)#}_API __attribute__ ((visibility("default")))
+#else
+#	define PHP_{#strtoupper($app_name)#}_API
+#endif
+
+#ifdef ZTS
+#include "TSRM.h"
+#endif
+
+PHP_MINIT_FUNCTION({#$app_name#});
+PHP_MSHUTDOWN_FUNCTION({#$app_name#});
+PHP_RINIT_FUNCTION({#$app_name#});
+PHP_RSHUTDOWN_FUNCTION({#$app_name#});
+PHP_MINFO_FUNCTION({#$app_name#});
+
+/* 
+  	Declare any global variables you may need between the BEGIN
+	and END macros here:     
+
+ZEND_BEGIN_MODULE_GLOBALS({#$app_name#})
+	long  global_value;
+	char *global_string;
+ZEND_END_MODULE_GLOBALS({#$app_name#})
+*/
+
+/* In every utility function you add that needs to use variables 
+   in php_{#$app_name#}_globals, call TSRMLS_FETCH(); after declaring other 
+   variables used by that function, or better yet, pass in TSRMLS_CC
+   after the last function argument and declare your utility function
+   with TSRMLS_DC after the last declared argument.  Always refer to
+   the globals in your function as {#strtoupper($app_name)#}_G(variable).  You are 
+   encouraged to rename these macros something shorter, see
+   examples in any other php module directory.
+*/
+
+#ifdef ZTS
+#define {#strtoupper($app_name)#}_G(v) TSRMG({#$app_name#}_globals_id, zend_{#$app_name#}_globals *, v)
+#else
+#define {#strtoupper($app_name)#}_G(v) ({#$app_name#}_globals.v)
+#endif
+
+#endif	/* PHP_{#strtoupper($app_name)#}_H */
+
+
+/*
+ * Local variables:
+ * tab-width: 4
+ * c-basic-offset: 4
+ * End:
+ * vim600: noet sw=4 ts=4 fdm=marker
+ * vim<600: noet sw=4 ts=4
+ */

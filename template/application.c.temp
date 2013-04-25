@@ -1,0 +1,134 @@
+/*
+{#$statement#}
+*/
+
+/* $Id: {#$app_name#}.c {#date("Y-m-d h:m:s")#} {#$author#} $ */
+
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#include "php.h"
+#include "php_ini.h"
+#include "ext/standard/info.h"
+#include "php_{#$app_name#}.h"
+{#join(CR, array_map(function($value){return '#include "'. $value.'"';}, $classes))#}
+
+/* If you declare any globals in php_{#$app_name#}.h uncomment this:
+ZEND_DECLARE_MODULE_GLOBALS({#$app_name#})
+*/
+
+/* True global resources - no need for thread safety here */
+static int le_{#$app_name#};
+
+/* {{{ {#$app_name#}_module_entry
+ */
+zend_module_entry {#$app_name#}_module_entry = {
+#if ZEND_MODULE_API_NO >= 20010901
+	STANDARD_MODULE_HEADER,
+#endif
+	"{#$app_name#}",
+	NULL,
+	PHP_MINIT({#$app_name#}),
+	PHP_MSHUTDOWN({#$app_name#}),
+	PHP_RINIT({#$app_name#}),		/* Replace with NULL if there's nothing to do at request start */
+	PHP_RSHUTDOWN({#$app_name#}),	/* Replace with NULL if there's nothing to do at request end */
+	PHP_MINFO({#$app_name#}),
+#if ZEND_MODULE_API_NO >= 20010901
+	"{#$varsion#}", /* Replace with version number for your extension */
+#endif
+	STANDARD_MODULE_PROPERTIES
+};
+/* }}} */
+
+#ifdef COMPILE_DL_{#strtoupper($app_name)#}
+ZEND_GET_MODULE({#$app_name#})
+#endif
+
+/* {{{ PHP_INI
+ */
+/* Remove comments and fill if you need to have entries in php.ini
+PHP_INI_BEGIN()
+    STD_PHP_INI_ENTRY("{#$app_name#}.global_value",      "42", PHP_INI_ALL, OnUpdateLong, global_value, zend_{#$app_name#}_globals, {#$app_name#}_globals)
+    STD_PHP_INI_ENTRY("{#$app_name#}.global_string", "foobar", PHP_INI_ALL, OnUpdateString, global_string, zend_{#$app_name#}_globals, {#$app_name#}_globals)
+PHP_INI_END()
+*/
+/* }}} */
+
+/* {{{ php_{#$app_name#}_init_globals
+ */
+/* Uncomment this function if you have INI entries
+static void php_{#$app_name#}_init_globals(zend_{#$app_name#}_globals *{#$app_name#}_globals)
+{
+	{#$app_name#}_globals->global_value = 0;
+	{#$app_name#}_globals->global_string = NULL;
+}
+*/
+/* }}} */
+
+/* {{{ PHP_MINIT_FUNCTION
+ */
+PHP_MINIT_FUNCTION({#$app_name#})
+{
+	
+	/* If you have INI entries, uncomment these lines 
+	REGISTER_INI_ENTRIES();
+	*/
+{#join(CR, array_map(function($value){return TAB.str_format(ZEND_MODULE_STARTUP_N, $value);}, $classes))#}
+
+	return SUCCESS;
+}
+/* }}} */
+
+/* {{{ PHP_MSHUTDOWN_FUNCTION
+ */
+PHP_MSHUTDOWN_FUNCTION({#$app_name#})
+{
+	/* uncomment this line if you have INI entries
+	UNREGISTER_INI_ENTRIES();
+	*/
+	return SUCCESS;
+}
+/* }}} */
+
+/* Remove if there's nothing to do at request start */
+/* {{{ PHP_RINIT_FUNCTION
+ */
+PHP_RINIT_FUNCTION({#$app_name#})
+{
+	return SUCCESS;
+}
+/* }}} */
+
+/* Remove if there's nothing to do at request end */
+/* {{{ PHP_RSHUTDOWN_FUNCTION
+ */
+PHP_RSHUTDOWN_FUNCTION({#$app_name#})
+{
+	return SUCCESS;
+}
+/* }}} */
+
+/* {{{ PHP_MINFO_FUNCTION
+ */
+PHP_MINFO_FUNCTION({#$app_name#})
+{
+	php_info_print_table_start();
+	php_info_print_table_header(2, "{#$full_name#}", "enabled");
+	php_info_print_table_row(2, "version", "{#$varsion#}");
+	php_info_print_table_end();
+
+	/* Remove comments if you have entries in php.ini
+	DISPLAY_INI_ENTRIES();
+	*/
+}
+/* }}} */
+
+/*
+ * Local variables:
+ * tab-width: 4
+ * c-basic-offset: 4
+ * End:
+ * vim600: noet sw=4 ts=4 fdm=marker
+ * vim<600: noet sw=4 ts=4
+ */

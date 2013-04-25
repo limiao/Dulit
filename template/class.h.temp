@@ -1,0 +1,37 @@
+/*
+{#$statement#}
+*/
+
+/* $Id: {#strtolower($class_name)#}.h {#date("Y-m-d h:m:s")#} {#$author#} $ */
+
+#ifndef __{#strtoupper($class_name)#}_H_
+#define __{#strtoupper($class_name)#}_H_
+
+extern {#ZEND_FUNCTION_ENTRY#} {#$class_entry_ce#};
+
+{#str_format(ZEND_MINIT_FUNCTION, strtolower($class_name))#};
+
+/** {{{ PHP_METHODS
+*/
+{#$method_define#}
+/* }}} */
+
+/** {{{ ARG_INFO
+*/
+{#$arg_info#}
+/* }}} */
+
+/** {{{ {#strtolower($class_name)#}_methods
+*/
+{#$function_entry#}
+/* }}} */
+#endif
+
+/*
+ * Local variables:
+ * tab-width: 4
+ * c-basic-offset: 4
+ * End:
+ * vim600: noet sw=4 ts=4 fdm=marker
+ * vim<600: noet sw=4 ts=4
+ */
